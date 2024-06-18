@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify User Stats</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Your Spotify Stats</h1>
+        <div class="user-profile">
+            <h2>Profile</h2>
+            <p><strong>Name:</strong> {{ user_profile.display_name }}</p>
+            <p><strong>Email:</strong> {{ user_profile.email }}</p>
+            <p><strong>Country:</strong> {{ user_profile.country }}</p>
+            <p><strong>Followers:</strong> {{ user_profile.followers.total }}</p>
+        </div>
+        <div class="top-artists">
+            <h2>Top Artists</h2>
+            <ul class="list-group">
+                {% for artist in top_artists %}
+                    <li class="list-group-item">{{ artist.name }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="top-tracks">
+            <h2>Top Tracks</h2>
+            <ul class="list-group">
+                {% for track in top_tracks %}
+                    <li class="list-group-item">{{ track.name }} by {{ track.artists|join:", " }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
