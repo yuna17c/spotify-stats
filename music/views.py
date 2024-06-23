@@ -37,6 +37,11 @@ def get_token():
 def get_auth_header(token):
     return {"Authorization": "Bearer " + token}
 
+def logout(request):
+    request.session.flush()
+    return redirect('/login/')
+
+
 def search_for_artist(token, artist_name):
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
@@ -89,7 +94,6 @@ def spotify_callback(request):
     request.session['oauth_token'] = token
     return redirect('home')
 
-
 def user_stats(request):
     token = request.session.get('oauth_token')
     if not token:
@@ -108,3 +112,17 @@ def user_stats(request):
     print(context)
 
     return render(request, 'stats.html', context)
+
+def get_top_songs(request):
+    token = request.session.get('oauth_token')
+    if not token:
+        return redirect('/login/')
+
+    headers = get_auth_header(token['access_token'])
+    user_top_tracks = get('https://api.spotify.com/v1/me/top/tracks', headers=headers).json()
+    print(user_top_tracks)
+
+    return JsonResponse({
+        'top_tracks': user_top_tracks['items']
+    })
+

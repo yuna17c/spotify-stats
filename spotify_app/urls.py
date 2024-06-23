@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),
     path('search/', views.search, name='search'),
+    path('get-top-songs/', views.get_top_songs, name='get_top_songs'),
     path('login/', views.spotify_login, name='spotify_login'),
     path('callback/', views.spotify_callback, name='spotify_callback'),
     path('stats/', views.user_stats, name='user_stats'),

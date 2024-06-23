@@ -3,73 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Choose Action</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-        .header h1 {
-            color: #333;
-        }
-        .search-container {
-            display: flex;
-            align-items: center;
-            width: 300px;
-            margin-left: auto;
-        }
-        .search-container input[type=text] {
-            width: 100%;
-            padding: 10px;
-            margin-right: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-        .search-container button {
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .search-container button:hover {
-            background-color: #45a049;
-        }
-        .actions {
-            display: flex;
-            justify-content: space-between;
-        }
-        .action-card {
-            flex: 0 0 48%;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-        .action-card h2 {
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .action-card ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .action-card li {
-            margin-bottom: 10px;
-        }
-    </style>
+    <title>Spotify Stats</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'styles/home.css' %}">
 </head>
 <body>
     <div class="header">
@@ -83,20 +19,20 @@
                 <li><a href="#">Top Songs</a></li>
                 <li><div class="form-group">
                     <label for="artist-name">Enter Artist Name:</label>
-                    <input type="text" id="artist-name" class="form-control" placeholder="e.g., Radiohead">
+                    <input type="text" id="artist-name" class="form-control" placeholder="Radiohead">
                 </div></li>
                 <button id="search-button" class="btn btn-primary">Search</button>
                 <div class="results">
-                    <h2>Songs:</h2>
+                    <h3>Top songs:</h3>
                     <ul id="song-list" class="list-group"></ul>
                 </div>
             </ul>
         </div>
         <div class="action-card">
             <h2>View Your Stats</h2>
-            <ul>
-                <li>View Your Stats</li>
-            </ul>
+            <h3>Top 10 Songs</h3>
+            <button id="show-top-songs" class="btn btn-primary">Show Top 10 Songs</button>
+            <ul id="top-songs-list" class="list-group"></ul>
         </div>
     </div>
 </body>
@@ -120,7 +56,6 @@
 <script>
     $(document).ready(function() {
         $('#search-button').click(function() {
-            console.log("yo")
             var artistName = $('#artist-name').val();
             var csrftoken = getCookie('csrftoken');
 
@@ -139,6 +74,20 @@
                             $('#song-list').append('<li class="list-group-item">' + song.name + '</li>');
                         });
                     }
+                }
+            });
+        });
+        $('#show-top-songs').click(function() {
+            var csrftoken = getCookie('csrftoken');
+            $.ajax({
+                url: '/get-top-songs/',
+                type: 'GET',
+                headers: { 'X-CSRFToken': csrftoken },
+                success: function(response) {
+                    $('#top-songs-list').empty();
+                    response.top_tracks.forEach(function(track) {
+                        $('#top-songs-list').append('<li class="list-group-item">' + track.name + ' by ' + track.artists[0].name + '</li>');
+                    });
                 }
             });
         });
